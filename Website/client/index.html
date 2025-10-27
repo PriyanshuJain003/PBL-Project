@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+    <div class="main">
+        <h1>PBL</h1>
+        <h3>Login Now</h3>
+        <form onsubmit="loginVerify(event)" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            
+            <div class="wrap">
+                <button type="submit">
+                    Submit
+                </button>
+            </div>
+        </form>
+        <div id="loginStatus" class="login-status"></div>
+        <p>Not registered? <a href="#" style="text-decoration: none;">Create an account</a></p>
+    </div>
+</body>
+<script src="./scripts/index.js"></script>
+</html>
