@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
@@ -6,19 +7,24 @@ from sklearn.preprocessing import MinMaxScaler
 
 app = Flask(__name__)
 
-# Load the DNN model from .h5 file
-dnn_model = tf.keras.models.load_model("dnn_model.h5")
+# ✅ Safely load the DNN model from .h5 file (regardless of where you run the script)
+model_path = os.path.join(os.path.dirname(__file__), "dnn_model.h5")
 
-# List of top 10 selected features
+# Check and load the model
+if not os.path.exists(model_path):
+    raise FileNotFoundError(f"Model file not found at: {model_path}")
+
+print(f"Loading DNN model from: {model_path}")
+dnn_model = tf.keras.models.load_model(model_path)
+
+# ✅ List of top 10 selected features
 selected_features = [
     'Dst Port', 'Flow Pkts/s', 'Fwd Header Len', 'Bwd Header Len',
     'Fwd Pkts/s', 'Bwd Pkts/s', 'Init Fwd Win Byts', 'Init Bwd Win Byts',
     'Fwd Act Data Pkts', 'Fwd Seg Size Min'
 ]
 
-# Preprocessing function
-
-
+# ✅ Preprocessing function
 def preprocess_data(df):
     df.replace([np.inf, -np.inf], np.nan, inplace=True)
     df.dropna(inplace=True)
@@ -34,9 +40,7 @@ def preprocess_data(df):
 
     return df[selected_features].values
 
-# Prediction function
-
-
+# ✅ Prediction function
 def predict_ddos(df):
     processed_data = preprocess_data(df)
 
@@ -46,9 +50,7 @@ def predict_ddos(df):
 
     return dnn_prediction
 
-# Define the Flask route for prediction
-
-
+# ✅ Define the Flask route for prediction
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -74,13 +76,11 @@ def predict():
 
         # Rename columns based on the mapping
         df.rename(columns=column_mapping, inplace=True)
-        print(df.columns)
+        print("Received columns:", df.columns.tolist())
 
         # Check for missing columns after renaming
         required_columns = list(column_mapping.values())
-
-        missing_columns = [
-            col for col in required_columns if col not in df.columns]
+        missing_columns = [col for col in required_columns if col not in df.columns]
 
         if missing_columns:
             return jsonify({'error': f"Missing columns in input data: {missing_columns}"}), 400
@@ -94,14 +94,13 @@ def predict():
 
         # Format the results into a JSON response
         response = {
-            # Convert numpy array to list for JSON serialization
             "DNNPrediction": dnn_result.tolist()
         }
 
         return jsonify(response)
 
     except Exception as e:
-        print(e)
+        print("Error during prediction:", e)
         return jsonify({'error': str(e)}), 500
 
 
