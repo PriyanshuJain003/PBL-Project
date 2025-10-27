@@ -19,6 +19,6 @@
     "pcap-parser": "^0.2.1"
   },
   "devDependencies": {
-    "cap": "^0.2.1"
+   
   }
 }
