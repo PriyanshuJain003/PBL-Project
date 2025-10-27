@@ -1,10 +1,13 @@
 {
   "name": "ddos-website",
   "version": "1.0.0",
-  "keywords": [],
+  "description": "",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.21.0",
     "axios": "^1.7.7",
